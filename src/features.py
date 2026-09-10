@@ -51,7 +51,7 @@ def build_features(df):
     older_std = df[older_cols].std(axis=1)
 
     # --- Momentum / mean-reversion ---
-    feats["ret_1"] = df["RET_1"]
+    # (RET_1 itself is already included via the raw passthrough columns below)
     feats["ret1_minus_older_mean"] = df["RET_1"] - older_mean
     feats["ret1_zscore_vs_older"] = (df["RET_1"] - older_mean) / older_std.replace(0, np.nan)
 
