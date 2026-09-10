@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.egg-info/
+
+# Large raw data / generated outputs, not versioned
+data/
+artifacts/
+submissions/
