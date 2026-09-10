@@ -129,6 +129,20 @@ def get_categorical_features():
     return ["GROUP", "ALLOCATION"]
 
 
+def align_categoricals(feat_train, feat_test, cat_cols=("GROUP", "ALLOCATION")):
+    """LightGBM/XGBoost's native categorical handling relies on pandas category
+    codes matching between train and predict time. GROUP/ALLOCATION happen to
+    have identical value sets in train and test, but pandas assigns categories
+    independently per-dataframe -- pin both to the same category list rather
+    than relying on that coincidence."""
+    for c in cat_cols:
+        categories = sorted(set(feat_train[c].astype(str)) | set(feat_test[c].astype(str)))
+        dtype = pd.CategoricalDtype(categories=categories)
+        feat_train[c] = feat_train[c].astype(str).astype(dtype)
+        feat_test[c] = feat_test[c].astype(str).astype(dtype)
+    return feat_train, feat_test
+
+
 def get_linear_feature_columns(feat_df):
     """Numeric-only columns suitable for a linear model (drop high-cardinality
     ALLOCATION; GROUP is one-hot encoded separately by the caller)."""
